@@ -34,6 +34,7 @@ export const LoginScreen = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
       <TextInput
+        autoCapitalize="none"
         label="Email"
         value={form.email}
         style={{ marginBottom: 20 }}
@@ -58,7 +59,6 @@ export const LoginScreen = ({ navigation }: Props) => {
       <Text
         style={{ color: "blue" }}
         onPress={() => {
-          console.log("register");
           navigation.navigate("Register");
         }}
       >

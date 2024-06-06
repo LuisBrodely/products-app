@@ -28,10 +28,25 @@ export const authLogin = async (email: string, password: string) => {
 
     return returnUserToken(data);
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
+
+export const authRegister = async (fullName: string, email: string, password: string) => {
+  email = email.toLowerCase();
+
+  try {
+    const { data } = await tesloApi.post<AuthResponse>("/auth/register", {
+      fullName,
+      email,
+      password,
+    });
+
+    return returnUserToken(data);
+  } catch (error) {
+    return null;
+  }
+}
 
 export const authCheckStatus = async () => {
   try {
@@ -42,3 +57,4 @@ export const authCheckStatus = async () => {
     return null;
   }
 }
+

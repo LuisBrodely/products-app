@@ -1,28 +1,47 @@
 import { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { RootStackParamList } from "../../navigation/StackNavigator";
 import { StackScreenProps } from "@react-navigation/stack";
+import { useAuthStore } from "../../../store/auth/useAuthStore";
 
 interface Props extends StackScreenProps<RootStackParamList, "Register"> {}
 
 export const RegisterScreen = ({ navigation }: Props) => {
+  const { register } = useAuthStore();
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const [user, setUser] = useState({
-    name: "",
+    fullName: "",
     username: "",
     password: "",
   });
 
+  const onRegister = async () => {
+    if (!user.fullName || !user.username || !user.password) {
+      Alert.alert("Error", "All fields are required");
+      return;
+    }
+    setIsLoading(true);
+    const response = await register(user.fullName, user.username, user.password);
+    setIsLoading(false);
+    if (response) return
+
+    Alert.alert("Error", "Invalid credentials");
+  }
+
   return (
     <View style={styles.container}>
       <TextInput
-        label="Name"
-        value={user.name}
+        label="Full Name"
+        value={user.fullName}
         style={{ marginBottom: 20 }}
-        onChangeText={(text) => setUser({ ...user, name: text })}
+        onChangeText={(text) => setUser({ ...user, fullName: text })}
       />
 
       <TextInput
+        autoCapitalize="none"
         label="Email"
         value={user.username}
         style={{ marginBottom: 20 }}
@@ -39,10 +58,8 @@ export const RegisterScreen = ({ navigation }: Props) => {
 
       <Button
         mode="contained"
-        onPress={() => {
-          console.log("login");
-          navigation.navigate("Home");
-        }}
+        onPress={onRegister}
+        disabled={isLoading}
       >
         Register
       </Button>
@@ -53,7 +70,6 @@ export const RegisterScreen = ({ navigation }: Props) => {
       <Text
         style={{ color: "blue" }}
         onPress={() => {
-          console.log("login");
           navigation.goBack();
         }}
       >
